@@ -1,4 +1,5 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { usePWAInstall } from '../hooks/usePWAInstall'
@@ -8,6 +9,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
   const location = useLocation()
   const { canInstall, install } = usePWAInstall()
+  const { user, supabaseConfigured } = useAuth()
 
   useEffect(() => {
     setOpen(false)
@@ -71,6 +73,11 @@ export default function Navbar() {
           <NavLink to="/contact" className={navLinkClass}>
             Contact
           </NavLink>
+          {supabaseConfigured ? (
+            <NavLink to={user ? '/ops' : '/ops/login'} className={navLinkClass}>
+              Ops
+            </NavLink>
+          ) : null}
           {canInstall && (
             <button
               type="button"
@@ -103,6 +110,11 @@ export default function Navbar() {
             <NavLink to="/contact" className={navLinkClass}>
               Contact
             </NavLink>
+            {supabaseConfigured ? (
+              <NavLink to={user ? '/ops' : '/ops/login'} className={navLinkClass}>
+                Ops
+              </NavLink>
+            ) : null}
             {canInstall && (
               <button
                 type="button"

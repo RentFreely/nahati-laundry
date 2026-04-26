@@ -1,48 +1,35 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaAndroid, FaApple, FaDownload } from 'react-icons/fa6'
 import { usePWAInstall } from '../hooks/usePWAInstall'
 
 export default function BigInstallButton({ className = '' }) {
   const navigate = useNavigate()
-  const { canInstall, install } = usePWAInstall()
+  const { canInstall, install, isInstalled, isIOS, isAndroid } = usePWAInstall()
   const [loading, setLoading] = useState(false)
-
-  const { isIOS, isAndroid } = useMemo(() => {
-    if (typeof navigator === 'undefined') return { isIOS: false, isAndroid: false }
-    const ua = navigator.userAgent || ''
-    return {
-      isIOS: /iphone|ipad|ipod/i.test(ua),
-      isAndroid: /android/i.test(ua),
-    }
-  }, [])
 
   const onClick = async () => {
     setLoading(true)
     try {
-      // If already installed, attempt to open app (opening current site suffices for PWA)
-      const installed = typeof localStorage !== 'undefined' && localStorage.getItem('nahati_installed') === '1'
-      if (installed) {
+      if (isInstalled) {
         navigate('/')
         return
       }
-      if (isIOS) {
+      if (canInstall) {
+        const choice = await install()
+        if (choice?.outcome === 'accepted') return
+      }
+      if (isIOS || isAndroid || !canInstall) {
         navigate('/install/iphone')
         return
       }
-      if (canInstall) {
-        await install()
-        return
-      }
-      // Fallback: show instructions if install prompt not available
-      navigate('/install/iphone')
     } finally {
       setLoading(false)
     }
   }
 
-  const Icon = isIOS ? FaApple : isAndroid ? FaAndroid : FaDownload
-  const label = isIOS ? 'Add to Home Screen' : 'Download App'
+  const Icon = isInstalled ? FaDownload : isIOS ? FaApple : isAndroid ? FaAndroid : FaDownload
+  const label = isInstalled ? 'Open App' : isIOS ? 'Add to Home Screen' : canInstall || isAndroid ? 'Install App' : 'Get App'
 
   return (
     <button

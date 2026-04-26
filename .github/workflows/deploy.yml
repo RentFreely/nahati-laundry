@@ -34,6 +34,9 @@ jobs:
       # (GitHub Pages custom domain uses URL root, not /nahati-laundry/.)
       # Optional: VITE_BASE_PATH=/nahati-laundry/ only if you need the github.io project preview URL.
       - name: Build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: npm run build
 
       - name: Copy index.html to 404.html for SPA routing

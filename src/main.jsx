@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
+import { AuthProvider } from './context/AuthContext'
 import './index.css'
 import { registerSW } from 'virtual:pwa-register'
 import Toast from './components/Toast'
@@ -59,8 +60,10 @@ const routerBasename =
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter basename={routerBasename}>
-      <PWAUpdater />
-      <App />
+      <AuthProvider>
+        <PWAUpdater />
+        <App />
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 )

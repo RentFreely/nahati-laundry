@@ -1,0 +1,2 @@
+-- Optional seed data. `supabase db reset` loads this after migrations.
+-- Example: insert test rows only in local dev (keep empty for production safety).

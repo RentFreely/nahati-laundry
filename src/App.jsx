@@ -12,6 +12,12 @@ import BlogDetail from './pages/BlogDetail'
 import Contact from './pages/Contact'
 import AdminInvoice from './pages/AdminInvoice'
 import InstallOnIPhone from './pages/InstallOnIPhone'
+import OpsGate from './components/OpsGate'
+import RequireManager from './components/RequireManager'
+import OpsLogin from './pages/ops/OpsLogin'
+import OpsDashboard from './pages/ops/OpsDashboard'
+import OpsOrders from './pages/ops/OpsOrders'
+import OpsLedger from './pages/ops/OpsLedger'
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -99,6 +105,33 @@ export default function App() {
                   </PageWrapper>
                 }
               />
+              <Route
+                path="/ops/login"
+                element={
+                  <PageWrapper>
+                    <OpsLogin />
+                  </PageWrapper>
+                }
+              />
+              <Route
+                path="/ops"
+                element={
+                  <PageWrapper>
+                    <OpsGate />
+                  </PageWrapper>
+                }
+              >
+                <Route index element={<OpsDashboard />} />
+                <Route path="orders" element={<OpsOrders />} />
+                <Route
+                  path="ledger"
+                  element={
+                    <RequireManager>
+                      <OpsLedger />
+                    </RequireManager>
+                  }
+                />
+              </Route>
               <Route
                 path="/admin/invoice"
                 element={

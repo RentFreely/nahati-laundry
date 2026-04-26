@@ -34,6 +34,32 @@ npm run preview
 - Update Google Forms config in `src/utils/googleForms.js` with your Form action URL and entry field IDs.
 - WhatsApp number is set to `+256200981445` in `src/utils/constants.js`.
 
+## Supabase (staff Ops)
+
+1. Create a project at [Supabase](https://supabase.com). Copy **Project URL** and **anon public** key.
+2. Copy `.env.example` to `.env` and fill `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+3. Install [Supabase CLI](https://supabase.com/docs/guides/cli) (or use `npx supabase`).
+4. Link and apply schema:
+
+   ```bash
+   npx supabase login
+   npx supabase link --project-ref YOUR_PROJECT_REF
+   npm run db:push
+   ```
+
+5. In Supabase **Authentication → Users**, add staff accounts (email/password). Each user gets a `profiles` row automatically.
+6. Promote the first manager in **SQL Editor**:
+
+   ```sql
+   update public.profiles set role = 'manager' where id = 'USER_UUID_HERE';
+   ```
+
+7. GitHub Actions: add repository secrets `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` so production builds include Ops.
+
+**Routes:** `/ops` (dashboard), `/ops/orders`, `/ops/ledger` (managers/admins). **Ledger** uses RLS; staff roles cannot read or write it.
+
+Optional: `npm run db:types` regenerates `src/types/supabase.generated.ts` when you change the schema (create that path first or let the command create the file).
+
 ## Project Structure
 
 ```
