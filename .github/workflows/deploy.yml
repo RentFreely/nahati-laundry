@@ -30,11 +30,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Root base (`/`) — required when the site is served at https://www.nahatilaundry.online/
+      # (GitHub Pages custom domain uses URL root, not /nahati-laundry/.)
+      # Optional: VITE_BASE_PATH=/nahati-laundry/ only if you need the github.io project preview URL.
       - name: Build
-        env:
-          # GitHub Pages project URL: https://rentfreely.github.io/nahati-laundry/
-          # For a root-only build (e.g. Namecheap zip), run: VITE_BASE_PATH=/ npm run build
-          VITE_BASE_PATH: /nahati-laundry/
         run: npm run build
 
       - name: Copy index.html to 404.html for SPA routing
