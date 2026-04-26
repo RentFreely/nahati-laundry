@@ -18,6 +18,7 @@ import OpsLogin from './pages/ops/OpsLogin'
 import OpsDashboard from './pages/ops/OpsDashboard'
 import OpsOrders from './pages/ops/OpsOrders'
 import OpsLedger from './pages/ops/OpsLedger'
+import OpsInvoice from './pages/ops/OpsInvoice'
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
@@ -123,6 +124,7 @@ export default function App() {
               >
                 <Route index element={<OpsDashboard />} />
                 <Route path="orders" element={<OpsOrders />} />
+                <Route path="invoice" element={<OpsInvoice />} />
                 <Route
                   path="ledger"
                   element={

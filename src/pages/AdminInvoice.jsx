@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { createInvoicePdf, invoiceFileName, generateInvoiceNumber } from '../utils/invoice'
 import { submitInvoiceToGoogleForms } from '../utils/googleFormsInvoices'
@@ -108,6 +109,13 @@ export default function AdminInvoice() {
 
   return (
     <div className="container-max py-10">
+      <div className="mb-6 rounded-xl border border-brand/25 bg-brand/5 px-4 py-3 text-sm text-slate-700">
+        <strong className="text-ink-900">Ops:</strong> to save invoices, income, and order links in Supabase, use{' '}
+        <Link className="font-bold text-brand-dark hover:underline" to="/ops/invoice">
+          Staff → Invoice
+        </Link>
+        . This page still downloads PDFs and can submit to Google Forms when configured.
+      </div>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Create Invoice</h1>
         <div className="text-sm text-gray-600">Invoice No: <span className="font-mono">{invoiceNumber}</span></div>

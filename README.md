@@ -56,7 +56,11 @@ npm run preview
 
 7. GitHub Actions: add repository secrets `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` so production builds include Ops.
 
-**Routes:** `/ops` (dashboard), `/ops/orders`, `/ops/ledger` (managers/admins). **Ledger** uses RLS; staff roles cannot read or write it.
+**Routes:** `/ops` (dashboard), `/ops/orders`, `/ops/invoice` (all ops staff), `/ops/ledger` **Finance** (managers/admins — structured expenses + income). Staff record **service income** from **Invoice** (optional ledger line); managers see the full ledger.
+
+**Staff accounts (Gmail + addressing):** `najunabrian+delivery@gmail.com`, `najunabrian+frontdesk@gmail.com`, `najunabrian+operations@gmail.com`, `najunabrian+general@gmail.com` — each has a `job_title` matching their role. Set or rotate passwords in **Supabase → Authentication → Users** (do not share passwords in the repo).
+
+**Invoices:** Saved in table `public.invoices` with a JSON `snapshot` (full line items). PDF is still generated in the browser for download.
 
 Optional: `npm run db:types` regenerates `src/types/supabase.generated.ts` when you change the schema (create that path first or let the command create the file).
 

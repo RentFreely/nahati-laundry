@@ -26,9 +26,12 @@ export default function OpsLayout({ children }) {
               <NavLink to="/ops/orders" className={navClass}>
                 Orders
               </NavLink>
+              <NavLink to="/ops/invoice" className={navClass}>
+                Invoice
+              </NavLink>
               {canLedger ? (
                 <NavLink to="/ops/ledger" className={navClass}>
-                  Ledger
+                  Finance
                 </NavLink>
               ) : null}
             </nav>
@@ -36,6 +39,9 @@ export default function OpsLayout({ children }) {
           <div className="flex flex-wrap items-center gap-3 text-sm">
             <span className="text-slate-600">
               <span className="font-medium text-ink-900">{profile?.full_name || 'Staff'}</span>
+              {profile?.job_title ? (
+                <span className="ml-2 text-xs font-medium text-slate-500">({profile.job_title})</span>
+              ) : null}
               <span className="mx-2 text-slate-300">·</span>
               <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-slate-700">
                 {profile?.role || '…'}
