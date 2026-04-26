@@ -58,7 +58,7 @@ npm run preview
 
 **Routes:** `/ops` (dashboard), `/ops/orders`, `/ops/invoice` (all ops staff), `/ops/ledger` **Finance** (managers/admins — structured expenses + income). Staff record **service income** from **Invoice** (optional ledger line); managers see the full ledger.
 
-**Staff accounts (Gmail + addressing):** `najunabrian+delivery@gmail.com`, `najunabrian+frontdesk@gmail.com`, `najunabrian+operations@gmail.com`, `najunabrian+general@gmail.com` — each has a `job_title` matching their role. Set or rotate passwords in **Supabase → Authentication → Users** (do not share passwords in the repo).
+**Staff accounts:** `staff1@nahati.online` (Delivery Staff), `staff2@nahati.online` (Front Desk Staff), `staff3@nahati.online` (Operations Staff), `staff4@nahati.online` (General Staff) — each has a `job_title` matching their role. Set or rotate passwords in **Supabase → Authentication → Users** (do not commit live passwords to the repo).
 
 **Invoices:** Saved in table `public.invoices` with a JSON `snapshot` (full line items). PDF is still generated in the browser for download.
 
