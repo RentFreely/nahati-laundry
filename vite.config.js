@@ -3,20 +3,32 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 /**
- * Site is hosted at the domain root (e.g. Namecheap → nahatilaundry.online / www).
- * For GitHub Pages under a subfolder only, set base to that folder, e.g. `/repo-name/`.
+ * `/` — root host (e.g. www.nahatilaundry.online or Namecheap static hosting).
+ * `/nahati-laundry/` — GitHub Pages project URL (RentFreely.github.io/nahati-laundry/).
+ * CI sets `VITE_BASE_PATH` in `.github/workflows/deploy.yml`.
  */
-const BASE = '/'
+function normalizeBase(value) {
+  if (!value || value === '/') return '/'
+  const withLeading = value.startsWith('/') ? value : `/${value}`
+  return withLeading.endsWith('/') ? withLeading : `${withLeading}/`
+}
 
-/**
- * Canonical host for meta tags, Open Graph, and JSON-LD (no trailing slash).
- * Apex currently redirects to www in Namecheap — default www + HTTPS.
- * Override per environment: `VITE_SITE_ORIGIN=https://nahatilaundry.online npm run build`
- */
+const BASE = normalizeBase(process.env.VITE_BASE_PATH)
+
 const SITE_ORIGIN = (process.env.VITE_SITE_ORIGIN || 'https://www.nahatilaundry.online').replace(/\/$/, '')
 
+const pathNoTrail = BASE === '/' ? '' : BASE.replace(/\/$/, '')
+/** Public site URL for meta / JSON-LD (always apex of live domain, not the GitHub Pages path). */
 const CANONICAL = `${SITE_ORIGIN}/`
 const OG_IMAGE = `${SITE_ORIGIN}/android-chrome-512x512.png`
+
+const navigateFallback = BASE === '/' ? '/index.html' : `${pathNoTrail}/index.html`
+
+function asset(path) {
+  const p = path.replace(/^\//, '')
+  if (BASE === '/') return `/${p}`
+  return `${pathNoTrail}/${p}`
+}
 
 function htmlMetaInject() {
   return {
@@ -50,13 +62,13 @@ export default defineConfig({
         scope: BASE,
         start_url: BASE,
         icons: [
-          { src: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
-          { src: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png', purpose: 'any' },
+          { src: asset('android-chrome-192x192.png'), sizes: '192x192', type: 'image/png' },
+          { src: asset('android-chrome-512x512.png'), sizes: '512x512', type: 'image/png' },
+          { src: asset('apple-touch-icon.png'), sizes: '180x180', type: 'image/png', purpose: 'any' },
         ],
       },
       workbox: {
-        navigateFallback: '/index.html',
+        navigateFallback,
         runtimeCaching: [
           {
             urlPattern: ({ request }) => request.destination === 'image',
@@ -66,7 +78,8 @@ export default defineConfig({
           {
             urlPattern: ({ url, request }) =>
               request.mode === 'navigate' ||
-              (url.pathname.startsWith('/assets/') && url.origin === self.location.origin),
+              (url.pathname.startsWith(`${pathNoTrail}/assets/`) && url.origin === self.location.origin) ||
+              (pathNoTrail === '' && url.pathname.startsWith('/assets/') && url.origin === self.location.origin),
             handler: 'StaleWhileRevalidate',
             options: { cacheName: 'app-cache' },
           },

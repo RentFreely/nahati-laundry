@@ -52,10 +52,14 @@ function PWAUpdater() {
   )
 }
 
+const baseUrl = import.meta.env.BASE_URL
+const routerBasename =
+  baseUrl === '/' || baseUrl === './' ? undefined : baseUrl.replace(/\/$/, '')
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
-  <PWAUpdater />
+    <BrowserRouter basename={routerBasename}>
+      <PWAUpdater />
       <App />
     </BrowserRouter>
   </React.StrictMode>

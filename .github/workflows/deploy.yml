@@ -31,6 +31,10 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          # GitHub Pages project URL: https://rentfreely.github.io/nahati-laundry/
+          # For a root-only build (e.g. Namecheap zip), run: VITE_BASE_PATH=/ npm run build
+          VITE_BASE_PATH: /nahati-laundry/
         run: npm run build
 
       - name: Copy index.html to 404.html for SPA routing
