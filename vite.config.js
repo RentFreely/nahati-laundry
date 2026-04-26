@@ -18,6 +18,14 @@ const BASE = normalizeBase(process.env.VITE_BASE_PATH)
 const SITE_ORIGIN = (process.env.VITE_SITE_ORIGIN || 'https://www.nahatilaundry.online').replace(/\/$/, '')
 
 const pathNoTrail = BASE === '/' ? '' : BASE.replace(/\/$/, '')
+
+function escapeRegExp(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+/** Regex-only: Workbox copies urlPattern into sw.js; closures must not reference vite-only vars like pathNoTrail. */
+const assetsPathPattern = BASE === '/' ? /^\/assets\// : new RegExp(`^${escapeRegExp(pathNoTrail)}/assets/`)
+
 /** Public site URL for meta / JSON-LD (always apex of live domain, not the GitHub Pages path). */
 const CANONICAL = `${SITE_ORIGIN}/`
 const OG_IMAGE = `${SITE_ORIGIN}/android-chrome-512x512.png`
@@ -76,10 +84,12 @@ export default defineConfig({
             options: { cacheName: 'images-cache', expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 * 30 } },
           },
           {
-            urlPattern: ({ url, request }) =>
-              request.mode === 'navigate' ||
-              (url.pathname.startsWith(`${pathNoTrail}/assets/`) && url.origin === self.location.origin) ||
-              (pathNoTrail === '' && url.pathname.startsWith('/assets/') && url.origin === self.location.origin),
+            urlPattern: ({ request }) => request.mode === 'navigate',
+            handler: 'StaleWhileRevalidate',
+            options: { cacheName: 'app-cache' },
+          },
+          {
+            urlPattern: assetsPathPattern,
             handler: 'StaleWhileRevalidate',
             options: { cacheName: 'app-cache' },
           },
